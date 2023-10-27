@@ -46,7 +46,7 @@ class AverageTrueRange(IndicatorMixin):
     def _run(self):
         close_shift = self._close.shift(1)
         true_range = self._true_range(self._high, self._low, close_shift)
-        self._atr = true_range.ewm(alpha=1 / self.window, min_periods=self.window, adjust=False).mean()
+        self._atr = true_range.ewm(alpha=1 / self._window, min_periods=self._window, adjust=False).mean()
 
     def average_true_range(self) -> pd.Series:
         """Average True Range (ATR)
