@@ -584,10 +584,13 @@ class StochRSIIndicator(IndicatorMixin):
         self._rsi = RSIIndicator(
             close=self._close, window=self._window, fillna=self._fillna
         ).rsi()
-        lowest_low_rsi = self._rsi.rolling(self._window).min()
-        self._stochrsi = (self._rsi - lowest_low_rsi) / (
-            self._rsi.rolling(self._window).max() - lowest_low_rsi
-        )
+        min_rsi = self._rsi.rolling(self._window).min()
+        max_rsi = self._rsi.rolling(self._window).max()
+        diff = (max_rsi - min_rsi)
+        if diff.eq(0).any():
+            diff += 2.220446049250313e-16
+            
+        self._stochrsi = (self._rsi - min_rsi) / diff
         self._stochrsi_k = self._stochrsi.rolling(self._smooth1).mean()
 
     def stochrsi(self):
